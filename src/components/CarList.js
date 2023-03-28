@@ -5,19 +5,28 @@ function CarList() {
 
     const dispatch = useDispatch();
 
-    const cars = useSelector((state) => {
-        return state.cars.data;
-    });
+    const { cars, name } = useSelector(({ form, cars: { data, searchTerm }}) => {
+        const filterCars =  data.filter((car) => 
+            car.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-    console.log(cars);
+        return {
+            cars: filterCars,
+            name: form.name
+        }
+    });
 
     const handleCarDelete = (car) => {
         dispatch(removeCar(car.id));
     };
 
     const renderedCars = cars.map((car) => {
+        // Decide is this car should be bold 
+        // state.form.name
+        const bold = name && car.name.toLowerCase().includes(name.toLowerCase())
+
         return (
-            <div key={car.id} className="panel">
+            <div key={car.id} className={`panel ${bold && 'bold'}`}>
                 <p>
                     {car.name} - ${car.cost}
                 </p>
